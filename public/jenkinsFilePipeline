@@ -1,0 +1,45 @@
+pipeline{
+    agent {
+        docker {
+            image 'node:18.17.1-alpine3.18'
+        }
+    }
+
+    environment {
+    FIREBASE_DEPLOY_TOKEN = credentials('firebase-token')
+    }
+
+    stages{
+        stage('Building'){
+            steps{
+            sh 'npm install -g firebase-tools'
+            }
+        } 
+
+         stage('Testing'){
+            steps{
+            sh 'firebase deploy -P testing-kelownatrails --token "$FIREBASE_DEPLOY_TOKEN"'
+            }
+        }
+        stage('Get Approval'){
+            options{
+                timeout(time: 1,unit: 'MINUTES')
+            }
+            steps{
+                input "Please approve to proceed to staging"
+            }
+        }
+
+        stage('Staging'){
+            steps{
+            sh 'firebase deploy -P staging-kelownatrails --token "$FIREBASE_DEPLOY_TOKEN"'
+            }
+        }
+
+        stage('Production'){
+            steps{
+            sh 'firebase deploy -P production-kelownatrails --token "$FIREBASE_DEPLOY_TOKEN"'
+            }
+        }
+    }
+}
