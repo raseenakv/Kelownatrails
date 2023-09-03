@@ -23,7 +23,7 @@ pipeline{
         }
         stage('Get Approval'){
             options{
-                timeout(time: 1,unit: 'MINUTES')
+                timeout(time: 10,unit: 'MINUTES')
             }
             steps{
                 input "Please approve to proceed to staging"
@@ -33,6 +33,11 @@ pipeline{
         stage('Staging'){
             steps{
             sh 'firebase deploy -P staging-kelownatrails --token "$FIREBASE_DEPLOY_TOKEN"'
+            }
+        }
+        stage('Get Approval'){
+            steps{
+            input "Please approve to proceed to Prodction Environment"
             }
         }
 
