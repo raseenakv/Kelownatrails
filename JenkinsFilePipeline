@@ -35,7 +35,7 @@ pipeline{
             sh 'firebase deploy -P staging-kelownatrails --token "$FIREBASE_DEPLOY_TOKEN"'
             }
         }
-        stage('Get Approval'){
+        stage('Get Production Approval'){
             steps{
             input "Please approve to proceed to Prodction Environment"
             }
